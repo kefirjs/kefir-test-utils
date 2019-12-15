@@ -3,12 +3,14 @@
   "version": "1.0.0",
   "description": "Framework-agnostic testing tools for Kefir",
   "main": "dist/index.js",
+  "types": "kefir-test-utils.d.ts",
   "scripts": {
     "build": "babel src -d dist",
     "prepublishOnly": "npm test && npm run build",
+    "fmt": "prettier src/*.js test/*.js kefir-test-utils.d.ts --write",
     "test": "npm run build && npm run test:fmt && npm run test:unit",
     "test:unit": "nyc mocha",
-    "test:fmt": "prettier src/*.js test/*.js --write"
+    "test:fmt": "prettier src/*.js test/*.js kefir-test-utils.d.ts --check"
   },
   "files": [
     "dist",
