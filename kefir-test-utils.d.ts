@@ -5,6 +5,8 @@ export type Event<V, E> = KEvent<V, E> & {
   current?: boolean
 }
 
+export type EventWithTime<V, E> = [number, Event<V, E>]
+
 export type Options = {current: boolean}
 
 export type Watcher<V, E> = {
@@ -29,7 +31,7 @@ export interface Helpers {
   withFakeTime(cb: (tick: (x: number) => void, clock: Clock) => void, reverseSimultaneous?: boolean): void
   logItem<V, E>(event: KEvent<V, E>, current: boolean): Event<V, E>
   watch<V, E>(obs: Observable<V, E>): Watcher<V, E>
-  watchWithTime<V, E>(stream$: Observable<V, E>): Event<V, E>[]
+  watchWithTime<V, E>(stream$: Observable<V, E>): EventWithTime<V, E>[]
 }
 
 export interface HelpersFactory {

@@ -1,7 +1,7 @@
 import {expectType} from 'tsd'
 import Kefir from 'kefir'
 import {Clock} from 'lolex'
-import createHelpers, {Event, Watcher} from '.'
+import createHelpers, {Event, Watcher, EventWithTime} from '.'
 
 const {VALUE, ERROR, END, value, error, end, withFakeTime, logItem, watch, watchWithTime} = createHelpers(Kefir)
 
@@ -21,4 +21,5 @@ expectType<void>(
 )
 expectType<Event<string, number>>(logItem({type: 'value', value: 'hello'}, false))
 expectType<Watcher<string, number>>(watch(new Kefir.Stream<string, number>()))
-expectType<Event<string, number>[]>(watchWithTime(new Kefir.Stream<string, number>()))
+expectType<EventWithTime<string, any>>([10, value('hello')])
+expectType<EventWithTime<string, number>[]>(watchWithTime(new Kefir.Stream<string, number>()))
