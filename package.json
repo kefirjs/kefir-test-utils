@@ -37,7 +37,7 @@
     "@types/kefir": "^3.8.0",
     "@types/lolex": "^2.0.0",
     "@types/node": "^13.1.4",
-    "lolex": "^2.0.0"
+    "lolex": "^6.0.0"
   },
   "peerDependencies": {
     "kefir": "^3.0.0"
