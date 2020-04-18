@@ -29,6 +29,37 @@ export default function createTestHelpers(Kefir) {
     return obs
   }
 
+  const parseDiagram = (diagram, events) => {
+    const frames = []
+
+    advancing: for (const frame of diagram) {
+      switch (frame) {
+        case '-':
+          frames.push([])
+          break
+        case '#':
+          frames.push([error(new Error())])
+          break
+        case '|':
+          frames.push([end()])
+          break advancing
+        default:
+          const event = events[frame] ?? value(frame.match(/\d/) ? Number(frame) : frame)
+          frames.push(Array.isArray(event) ? event : [event])
+          break
+      }
+    }
+
+    return frames
+  }
+
+  const sendFrames = (obs, {frames, advance}) => {
+    for (const frame of frames) {
+      send(obs, frame)
+      advance()
+    }
+  }
+
   const value = (val, {current = false} = {}) => ({
     type: VALUE,
     value: val,
@@ -181,6 +212,8 @@ export default function createTestHelpers(Kefir) {
     VALUE,
     ERROR,
     send,
+    parseDiagram,
+    sendFrames,
     value,
     error,
     end,

@@ -9,6 +9,8 @@ describe('kefir-test-utils', () => {
     VALUE,
     ERROR,
     send,
+    parseDiagram,
+    sendFrames,
     value,
     error,
     end,
@@ -65,6 +67,49 @@ describe('kefir-test-utils', () => {
 
     it('should throw if invalid type', () => {
       expect(() => send(obs, [{type: 'WRONG'}])).to.throw(TypeError)
+    })
+  })
+
+  describe('sendFrames', () => {
+    let log, obs, oldErr
+
+    beforeEach(() => {
+      obs = stream()
+      oldErr = global.Error
+      global.Error = class Error {}
+    })
+
+    afterEach(() => {
+      global.Error = oldErr
+    })
+
+    it('should send diagram to observable', () => {
+      const events = {
+        a: [value(0), value(1)],
+        b: [value(2)],
+        c: value(4),
+        d: [value(5), error(6)],
+      }
+
+      withFakeTime(tick => {
+        ;({log} = watchWithTime(obs))
+
+        sendFrames(obs, {
+          frames: parseDiagram('ab-c--d---#----7-e|---f', events),
+          advance: () => tick(10),
+        })
+      })
+
+      expect(log).to.deep.equal([
+        ...events.a.map(e => [0, e]),
+        [10, events.b[0]],
+        [30, events.c],
+        ...events.d.map(e => [60, e]),
+        [100, error(new Error())],
+        [150, value(7)],
+        [170, value('e')],
+        [180, end()],
+      ])
     })
   })
 
