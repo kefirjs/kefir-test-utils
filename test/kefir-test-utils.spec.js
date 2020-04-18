@@ -1,5 +1,5 @@
 /* eslint-env mocha */
-import {config, AssertionError, expect, use} from 'chai'
+import {expect} from 'chai'
 import Kefir from 'kefir'
 import createTestUtils from '../src'
 
@@ -17,9 +17,7 @@ describe('kefir-test-utils', () => {
     prop,
     stream,
     pool,
-    shakeTimers,
     withFakeTime,
-    logItem,
     watch,
     watchWithTime,
   } = createTestUtils(Kefir)
