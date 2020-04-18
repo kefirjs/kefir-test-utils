@@ -1,5 +1,10 @@
 import lolex from 'lolex'
 
+const throwEventTypeError = event => {
+  throw new TypeError(`Expected event object, received:
+${JSON.stringify(event, null, '  ')}`)
+}
+
 export default function createTestHelpers(Kefir) {
   const END = 'end'
   const VALUE = 'value'
@@ -18,7 +23,7 @@ export default function createTestHelpers(Kefir) {
           obs._emitEnd()
           break
         default:
-          throw new TypeError(`chai-kefir :: send :: Expected event object, received ${typeof event}`)
+          throwEventTypeError(event)
       }
     }
     return obs
@@ -112,7 +117,7 @@ export default function createTestHelpers(Kefir) {
   const withFakeTime = (cb, reverseSimultaneous = false) => {
     const clock = lolex.install({now: 1000})
     const tick = t => {
-      if (reverseSimultaneous) {
+      if (reverseSimultaneous && clock.timers) {
         shakeTimers(clock)
       }
       clock.tick(t)
@@ -139,6 +144,8 @@ export default function createTestHelpers(Kefir) {
         return error(event.value, {current})
       case END:
         return end({current})
+      default:
+        throwEventTypeError(event)
     }
   }
 
@@ -153,11 +160,19 @@ export default function createTestHelpers(Kefir) {
   }
 
   const watchWithTime = obs => {
-    const startTime = new Date()
+    const startTime = +new Date()
     const log = []
     let isCurrent = true
-    obs.onAny(event => log.push([new Date() - startTime, logItem(event, isCurrent)]))
+    const fn = event => log.push([+new Date() - startTime, logItem(event, isCurrent)])
+    const unwatch = () => obs.offAny(fn)
+    obs.onAny(fn)
     isCurrent = false
+
+    // Using the array directly is deprecated.
+    // Use the log & unwatch properties instead.
+    // The return will match `watch` in v2.0.0.
+    log.log = log
+    log.unwatch = unwatch
     return log
   }
 

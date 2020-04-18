@@ -31,7 +31,7 @@ export interface Helpers {
   withFakeTime(cb: (tick: (x: number) => void, clock: Clock) => void, reverseSimultaneous?: boolean): void
   logItem<V, E>(event: KEvent<V, E>, current: boolean): Event<V, E>
   watch<V, E>(obs: Observable<V, E>): Watcher<V, E>
-  watchWithTime<V, E>(stream$: Observable<V, E>): EventWithTime<V, E>[]
+  watchWithTime<V, E>(stream$: Observable<V, E>): EventWithTime<V, E>[] & Watcher<V, E>
 }
 
 export interface HelpersFactory {
