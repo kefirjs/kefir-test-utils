@@ -22,4 +22,4 @@ expectType<void>(
 expectType<Event<string, number>>(logItem({type: 'value', value: 'hello'}, false))
 expectType<Watcher<string, number>>(watch(new Kefir.Stream<string, number>()))
 expectType<EventWithTime<string, any>>([10, value('hello')])
-expectType<EventWithTime<string, number>[] & Watcher<string, number>>(watchWithTime(new Kefir.Stream<string, number>()))
+expectType<EventWithTime<string, number>[]>(watchWithTime(new Kefir.Stream<string, number>()))

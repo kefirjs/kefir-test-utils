@@ -195,15 +195,15 @@ export default function createTestHelpers(Kefir) {
     const log = []
     let isCurrent = true
     const fn = event => log.push([+new Date() - startTime, logItem(event, isCurrent)])
-    const unwatch = () => obs.offAny(fn)
+    // const unwatch = () => obs.offAny(fn)
     obs.onAny(fn)
     isCurrent = false
 
     // Using the array directly is deprecated.
     // Use the log & unwatch properties instead.
     // The return will match `watch` in v2.0.0.
-    log.log = log
-    log.unwatch = unwatch
+    // log.log = log
+    // log.unwatch = unwatch
     return log
   }
 
