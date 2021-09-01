@@ -2,6 +2,6 @@
 
 Framework-agnostic testing tool for Kefir.
 
-[![Build Status](https://travis-ci.org/kefirjs/kefir-test-utils.svg?branch=master)](https://travis-ci.org/kefirjs/kefir-test-utils)
+[![Build Status](https://github.com/kefirjs/kefir-test-utils/actions/workflows/continuous_integration.yml/badge.svg)](https://github.com/kefirjs/kefir-test-utils/actions?query=workflow%3ACI)
 
 ---
