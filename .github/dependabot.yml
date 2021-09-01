@@ -6,9 +6,6 @@ updates:
     interval: daily
   open-pull-requests-limit: 10
   ignore:
-  - dependency-name: lolex
-    versions:
-    - "> 2.7.5"
   - dependency-name: mocha
     versions:
     - 8.2.1

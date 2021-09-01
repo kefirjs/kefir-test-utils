@@ -1,4 +1,4 @@
-import lolex from 'lolex'
+import {install} from '@sinonjs/fake-timers'
 
 const throwEventTypeError = event => {
   throw new TypeError(`Expected event object, received:
@@ -146,7 +146,7 @@ export default function createTestHelpers(Kefir) {
   }
 
   const withFakeTime = (cb, reverseSimultaneous = false) => {
-    const clock = lolex.install({now: 1000})
+    const clock = install({now: 1000})
     const tick = t => {
       if (reverseSimultaneous && clock.timers) {
         shakeTimers(clock)

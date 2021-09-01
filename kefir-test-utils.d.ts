@@ -1,5 +1,5 @@
 import {Observable, Stream, Property, Event as KEvent, Pool} from 'kefir'
-import {Clock} from 'lolex'
+import {Clock} from '@sinonjs/fake-timers'
 
 export type Event<V, E> = KEvent<V, E> & {
   current?: boolean
