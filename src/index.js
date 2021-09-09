@@ -1,5 +1,15 @@
 import lolex from 'lolex'
 
+function extend(target /*, mixin1, mixin2... */) {
+  for (let i = 1; i < arguments.length; i++) {
+    for (const prop in arguments[i]) {
+      target[prop] = arguments[i][prop]
+    }
+  }
+
+  return target
+}
+
 const throwEventTypeError = event => {
   throw new TypeError(`Expected event object, received:
 ${JSON.stringify(event, null, '  ')}`)
@@ -207,10 +217,31 @@ export default function createTestHelpers(Kefir) {
     return log
   }
 
+  const observables = {
+    active: [],
+    clear: function() {
+      this.active = []
+    },
+  }
+
+  const {_onActivation, _onDeactivation} = Kefir.Observable.prototype
+
+  extend(Kefir.Observable.prototype, {
+    _onActivation() {
+      observables.active.push(this)
+      _onActivation.apply(this)
+    },
+    _onDeactivation() {
+      observables.active.splice(observables.active.indexOf(this), 1)
+      _onDeactivation.apply(this)
+    },
+  })
+
   return {
     END,
     VALUE,
     ERROR,
+    observables,
     send,
     parseDiagram,
     sendFrames,
