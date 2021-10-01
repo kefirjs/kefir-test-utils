@@ -211,14 +211,16 @@ describe('kefir-test-utils', () => {
 
   describe('watchWithTime', () => {
     it('should log values emitted by stream', () => {
-      const obs = stream()
-      const log = watchWithTime(obs)
-      send(obs, [value(1), error(2), end()])
-      expect(log).to.deep.equal([
-        [0, value(1)],
-        [0, error(2)],
-        [0, end()],
-      ])
+      withFakeTime(() => {
+        const obs = stream()
+        const log = watchWithTime(obs)
+        send(obs, [value(1), error(2), end()])
+        expect(log).to.deep.equal([
+          [0, value(1)],
+          [0, error(2)],
+          [0, end()],
+        ])
+      })
     })
 
     it.skip('should not log values emitted by stream after unwatch', () => {
