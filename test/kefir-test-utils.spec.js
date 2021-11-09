@@ -8,6 +8,7 @@ describe('kefir-test-utils', () => {
     END,
     VALUE,
     ERROR,
+    observables,
     send,
     parseDiagram,
     sendFrames,
@@ -23,6 +24,141 @@ describe('kefir-test-utils', () => {
     watch,
     watchWithTime,
   } = createTestUtils(Kefir)
+
+  beforeEach(() => {
+    observables.clear()
+  })
+
+  afterEach(() => {
+    expect(observables.active.length).to.equal(0, 'Expected 0 active observables after test execution.')
+  })
+
+  describe('activeObservables', () => {
+    const noop = () => {}
+
+    describe('Observable', () => {
+      it('counts active observables', () => {
+        const observable = new Kefir.Observable()
+        expect(observables.active.length).to.equal(0)
+
+        observable.onValue(noop)
+        expect(observables.active.length).to.equal(1)
+        observable.offValue(noop)
+      })
+
+      it('counts all observable activations', () => {
+        const observable = new Kefir.Observable()
+        expect(observables.active.length).to.equal(0)
+
+        observable.onValue(noop)
+        expect(observables.active.length).to.equal(1)
+        observable.offValue(noop)
+        expect(observables.active.length).to.equal(0)
+
+        observable.onValue(noop)
+        expect(observables.active.length).to.equal(1)
+        observable.offValue(noop)
+        expect(observables.active.length).to.equal(0)
+      })
+
+      it('multiple subscriptions do not count as multiple active observables', () => {
+        const observable = new Kefir.Observable()
+        expect(observables.active.length).to.equal(0)
+
+        observable.onValue(noop)
+        expect(observables.active.length).to.equal(1)
+        observable.onError(noop)
+        expect(observables.active.length).to.equal(1)
+
+        observable.offValue(noop)
+        expect(observables.active.length).to.equal(1)
+        observable.offError(noop)
+        expect(observables.active.length).to.equal(0)
+      })
+    })
+
+    describe('Property', () => {
+      it('counts active observables', () => {
+        const observable = new Kefir.Property()
+        expect(observables.active.length).to.equal(0)
+
+        observable.onValue(noop)
+        expect(observables.active.length).to.equal(1)
+        observable.offValue(noop)
+      })
+
+      it('counts all observable activations', () => {
+        const observable = new Kefir.Property()
+        expect(observables.active.length).to.equal(0)
+
+        observable.onValue(noop)
+        expect(observables.active.length).to.equal(1)
+        observable.offValue(noop)
+        expect(observables.active.length).to.equal(0)
+
+        observable.onValue(noop)
+        expect(observables.active.length).to.equal(1)
+        observable.offValue(noop)
+        expect(observables.active.length).to.equal(0)
+      })
+
+      it('multiple subscriptions do not count as multiple active observables', () => {
+        const observable = new Kefir.Property()
+        expect(observables.active.length).to.equal(0)
+
+        observable.onValue(noop)
+        expect(observables.active.length).to.equal(1)
+        observable.onError(noop)
+        expect(observables.active.length).to.equal(1)
+
+        observable.offValue(noop)
+        expect(observables.active.length).to.equal(1)
+        observable.offError(noop)
+        expect(observables.active.length).to.equal(0)
+      })
+    })
+
+    describe('Stream', () => {
+      it('counts active observables', () => {
+        const observable = new Kefir.Stream()
+        expect(observables.active.length).to.equal(0)
+
+        observable.onValue(noop)
+        expect(observables.active.length).to.equal(1)
+        observable.offValue(noop)
+      })
+
+      it('counts all observable activations', () => {
+        const observable = new Kefir.Stream()
+        expect(observables.active.length).to.equal(0)
+
+        observable.onValue(noop)
+        expect(observables.active.length).to.equal(1)
+        observable.offValue(noop)
+        expect(observables.active.length).to.equal(0)
+
+        observable.onValue(noop)
+        expect(observables.active.length).to.equal(1)
+        observable.offValue(noop)
+        expect(observables.active.length).to.equal(0)
+      })
+
+      it('multiple subscriptions do not count as multiple active observables', () => {
+        const observable = new Kefir.Stream()
+        expect(observables.active.length).to.equal(0)
+
+        observable.onValue(noop)
+        expect(observables.active.length).to.equal(1)
+        observable.onError(noop)
+        expect(observables.active.length).to.equal(1)
+
+        observable.offValue(noop)
+        expect(observables.active.length).to.equal(1)
+        observable.offError(noop)
+        expect(observables.active.length).to.equal(0)
+      })
+    })
+  })
 
   describe('observable creators', () => {
     it('should create a prop', () => {
@@ -41,10 +177,16 @@ describe('kefir-test-utils', () => {
   describe('send', () => {
     let log, obs
 
+    const fn = val => log.push(val)
+
     beforeEach(() => {
       log = []
       obs = stream()
-      obs.onAny(val => log.push(val))
+      obs.onAny(fn)
+    })
+
+    afterEach(() => {
+      obs.offAny(fn)
     })
 
     it('should send a value', () => {
@@ -118,6 +260,7 @@ describe('kefir-test-utils', () => {
       const obs = activate(stream())
 
       expect(obs._active).to.equal(true)
+      deactivate(obs)
     })
 
     it('should deactivate an activated observable', () => {
