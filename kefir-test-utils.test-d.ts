@@ -1,6 +1,6 @@
 import {expectType} from 'tsd'
 import Kefir from 'kefir'
-import {Clock} from 'lolex'
+import {Clock} from '@sinonjs/fake-timers'
 import createHelpers, {Event, Watcher, EventWithTime} from '.'
 
 const {VALUE, ERROR, END, value, error, end, withFakeTime, logItem, watch, watchWithTime} = createHelpers(Kefir)
