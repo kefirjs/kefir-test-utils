@@ -234,7 +234,7 @@ describe('kefir-test-utils', () => {
       }
 
       withFakeTime(tick => {
-        log = watchWithTime(obs)
+        log = watchWithTime(obs).log
 
         sendFrames(obs, {
           frames: parseDiagram('ab-c--d---#----7-e|---f', events),
@@ -356,7 +356,7 @@ describe('kefir-test-utils', () => {
     it('should log values emitted by stream', () => {
       withFakeTime(() => {
         const obs = stream()
-        const log = watchWithTime(obs)
+        const {log} = watchWithTime(obs)
         send(obs, [value(1), error(2), end()])
         expect(log).to.deep.equal([
           [0, value(1)],
@@ -366,7 +366,7 @@ describe('kefir-test-utils', () => {
       })
     })
 
-    it.skip('should not log values emitted by stream after unwatch', () => {
+    it('should not log values emitted by stream after unwatch', () => {
       const obs = stream()
       const {log, unwatch} = watchWithTime(obs)
       unwatch()
