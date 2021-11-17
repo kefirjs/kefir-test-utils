@@ -213,11 +213,10 @@ describe('kefir-test-utils', () => {
   })
 
   describe('sendFrames', () => {
-    let log, obs, oldErr
+    let log
+    const {Error: oldErr} = global
 
     beforeEach(() => {
-      obs = stream()
-      oldErr = global.Error
       global.Error = class Error {}
     })
 
@@ -226,6 +225,7 @@ describe('kefir-test-utils', () => {
     })
 
     it('should send diagram to observable', () => {
+      const obs = stream()
       const events = {
         a: [value(0), value(1)],
         b: [value(2)],
