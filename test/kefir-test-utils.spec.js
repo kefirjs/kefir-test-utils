@@ -213,11 +213,10 @@ describe('kefir-test-utils', () => {
   })
 
   describe('sendFrames', () => {
-    let log, obs, oldErr
+    let log
+    const {Error: oldErr} = global
 
     beforeEach(() => {
-      obs = stream()
-      oldErr = global.Error
       global.Error = class Error {}
     })
 
@@ -226,6 +225,7 @@ describe('kefir-test-utils', () => {
     })
 
     it('should send diagram to observable', () => {
+      const obs = stream()
       const events = {
         a: [value(0), value(1)],
         b: [value(2)],
@@ -234,7 +234,7 @@ describe('kefir-test-utils', () => {
       }
 
       withFakeTime(tick => {
-        log = watchWithTime(obs)
+        log = watchWithTime(obs).log
 
         sendFrames(obs, {
           frames: parseDiagram('ab-c--d---#----7-e|---f', events),
@@ -356,7 +356,7 @@ describe('kefir-test-utils', () => {
     it('should log values emitted by stream', () => {
       withFakeTime(() => {
         const obs = stream()
-        const log = watchWithTime(obs)
+        const {log} = watchWithTime(obs)
         send(obs, [value(1), error(2), end()])
         expect(log).to.deep.equal([
           [0, value(1)],
@@ -366,7 +366,7 @@ describe('kefir-test-utils', () => {
       })
     })
 
-    it.skip('should not log values emitted by stream after unwatch', () => {
+    it('should not log values emitted by stream after unwatch', () => {
       const obs = stream()
       const {log, unwatch} = watchWithTime(obs)
       unwatch()
