@@ -10,7 +10,7 @@ function extend(target /*, mixin1, mixin2... */) {
   return target
 }
 
-const throwEventTypeError = event => {
+const throwEventTypeError = (event) => {
   throw new TypeError(`Expected event object, received:
 ${JSON.stringify(event, null, '  ')}`)
 }
@@ -89,12 +89,12 @@ export default function createTestHelpers(Kefir) {
 
   const _activateHelper = () => {}
 
-  const activate = obs => {
+  const activate = (obs) => {
     obs.onEnd(_activateHelper)
     return obs
   }
 
-  const deactivate = obs => {
+  const deactivate = (obs) => {
     obs.offEnd(_activateHelper)
     return obs
   }
@@ -112,9 +112,9 @@ export default function createTestHelpers(Kefir) {
   //   2) We need to restore (unshake) them back somehow (after calling tick)
   //   Hopefully we'll get a native implementation, and wont have to fix those
   //   https://github.com/sinonjs/lolex/issues/24
-  const shakeTimers = clock => {
+  const shakeTimers = (clock) => {
     const ids = Object.keys(clock.timers)
-    const timers = ids.map(id => clock.timers[id])
+    const timers = ids.map((id) => clock.timers[id])
 
     // see https://github.com/sinonjs/lolex/blob/a93c8a9af05fb064ae5c2ad1bfc72874973167ee/src/lolex.js#L175-L209
     timers.sort((a, b) => {
@@ -157,7 +157,7 @@ export default function createTestHelpers(Kefir) {
 
   const withFakeTime = (cb, reverseSimultaneous = false) => {
     const clock = install({now: 1000})
-    const tick = t => {
+    const tick = (t) => {
       if (reverseSimultaneous && clock.timers) {
         shakeTimers(clock)
       }
@@ -190,21 +190,21 @@ export default function createTestHelpers(Kefir) {
     }
   }
 
-  const watch = obs => {
+  const watch = (obs) => {
     const log = []
     let isCurrent = true
-    const fn = event => log.push(logItem(event, isCurrent))
+    const fn = (event) => log.push(logItem(event, isCurrent))
     const unwatch = () => obs.offAny(fn)
     obs.onAny(fn)
     isCurrent = false
     return {log, unwatch}
   }
 
-  const watchWithTime = obs => {
+  const watchWithTime = (obs) => {
     const startTime = +new Date()
     const log = []
     let isCurrent = true
-    const fn = event => log.push([+new Date() - startTime, logItem(event, isCurrent)])
+    const fn = (event) => log.push([+new Date() - startTime, logItem(event, isCurrent)])
     const unwatch = () => obs.offAny(fn)
     obs.onAny(fn)
     isCurrent = false
@@ -213,7 +213,7 @@ export default function createTestHelpers(Kefir) {
 
   const observables = {
     active: [],
-    clear: function() {
+    clear: function () {
       this.active = []
     },
   }

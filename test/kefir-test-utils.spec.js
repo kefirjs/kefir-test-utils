@@ -177,7 +177,7 @@ describe('kefir-test-utils', () => {
   describe('send', () => {
     let log, obs
 
-    const fn = val => log.push(val)
+    const fn = (val) => log.push(val)
 
     beforeEach(() => {
       log = []
@@ -233,7 +233,7 @@ describe('kefir-test-utils', () => {
         d: [value(5), error(6)],
       }
 
-      withFakeTime(tick => {
+      withFakeTime((tick) => {
         log = watchWithTime(obs).log
 
         sendFrames(obs, {
@@ -243,10 +243,10 @@ describe('kefir-test-utils', () => {
       })
 
       expect(log).to.deep.equal([
-        ...events.a.map(e => [0, e]),
+        ...events.a.map((e) => [0, e]),
         [10, events.b[0]],
         [30, events.c],
-        ...events.d.map(e => [60, e]),
+        ...events.d.map((e) => [60, e]),
         [100, error(new Error())],
         [150, value(7)],
         [170, value('e')],
